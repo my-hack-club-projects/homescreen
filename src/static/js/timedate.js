@@ -1,4 +1,4 @@
-const TIMEUPDATE_INTERVAL = 1000;
+const TIMEUPDATE_INTERVAL = 1000 * 30;
 const TEMPERATUREUPDATE_INTERVAL = 1000 * 60 * 5;
 
 class TimedateWidget {
