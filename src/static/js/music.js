@@ -53,6 +53,48 @@ class MusicPlayer {
 
     this.artistFilterButton.addEventListener("click", function () {
       this.artistFilterPopup.classList.toggle("hidden");
+      
+      if (!this.artistFilterPopup.classList.contains("hidden")) {
+        const artistList = new Set();
+        this.trackList.forEach(track => {
+          artistList.add(track.artist);
+        });
+
+        const artistFilterList = document.querySelector(".artist-filter-list");
+        artistFilterList.innerHTML = '';
+        artistList.forEach(artist => {
+          const artistFilter = document.createElement('button');
+          artistFilter.textContent = this.filter.includes(artist) ? "✓ " + artist : artist;
+          artistFilter.classList.add('artist-filter-item', 'bg-white', 'hover:bg-gray-200', 'rounded-md', 'w-full', 'p-2');
+          if (this.filter.includes(artist)) {
+            artistFilter.classList.add('bg-gray-200');
+          }
+          artistFilter.addEventListener("click", function () {
+            if (this.filter.includes(artist)) {
+              this.filter = this.filter.filter(item => item !== artist);
+              artistFilter.textContent = artist;
+              artistFilter.classList.remove('bg-gray-200');
+            } else {
+              this.filter.push(artist);
+              artistFilter.textContent = "✓ " + artist;
+              artistFilter.classList.add('bg-gray-200');
+            }
+            this.update();
+
+            if (!this.filter.includes(this.trackArtist.textContent)) {
+              this.trackIndex = 0;
+              this.loadTrack(0);
+            }
+          }.bind(this));
+          artistFilterList.appendChild(artistFilter);
+        });
+      } else {
+        const artistFilterItems = document.querySelectorAll('.artist-filter-item');
+        artistFilterItems.forEach(item => {
+          item.removeEventListener('click', null);
+          item.remove();
+        });
+      }
     }.bind(this));
 
     if ('mediaSession' in navigator) {
@@ -80,6 +122,7 @@ class MusicPlayer {
     if (data.success) {
       this.trackList = data.tracks;
       this.trackIndex = 0;
+      this.update();
       this.loadTrack(0);
     }
   }
@@ -87,18 +130,18 @@ class MusicPlayer {
   loadTrack(index) {
     clearInterval(this.updateTimer);
 
-    if (this.trackList.length === 0) {
+    if (this.filteredList.length === 0) {
       this.trackName.textContent = 'No tracks imported';
       this.trackArtist.textContent = '';
       return;
     }
 
-    if (index < 0 || index >= this.trackList.length) {
+    if (index < 0 || index >= this.filteredList.length) {
       console.error('Invalid track index');
       return
     }
 
-    const track = this.trackList[index];
+    const track = this.filteredList[index];
     this.currTrack.src = track.path;
     this.currTrack.load();
 
@@ -114,10 +157,10 @@ class MusicPlayer {
     let filteredList = this.trackList;
     if (this.filter.length > 0) {
       filteredList = this.trackList.filter(track => {
-        return this.filter.some(filter => {
-          return track.artist.toLowerCase().includes(filter);
-        });
+        return this.filter.includes(track.artist);
       });
+    } else {
+      filteredList = this.trackList;
     }
     this.filteredList = filteredList;
   }
@@ -154,14 +197,14 @@ class MusicPlayer {
   }
 
   nextTrack() {
-    this.trackIndex = (this.trackIndex + 1) % this.trackList.length;
+    this.trackIndex = (this.trackIndex + 1) % this.filteredList.length;
     this.loadTrack(this.trackIndex);
     this.playTrack();
     this.update();
   }
 
   prevTrack() {
-    this.trackIndex = (this.trackIndex - 1 + this.trackList.length) % this.trackList.length;
+    this.trackIndex = (this.trackIndex - 1 + this.filteredList.length) % this.filteredList.length;
     this.loadTrack(this.trackIndex);
     this.playTrack();
     this.update();
