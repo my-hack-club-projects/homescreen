@@ -1,5 +1,5 @@
 <div id="widget-music"
-  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center h-[95vh] p-4 pb-6">
+  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center h-[95vh] max-w-md p-4 pb-6">
   <div class="top-bar flex flex-row items-center justify-between w-full mb-6">
     <button></button>
     <!-- TODO: Filter artist button above -->
@@ -13,9 +13,9 @@
     </label>
   </div>
   
-  <div class="details flex flex-col items-center justify-center px-6">
-    <div class="track-name text-3xl">Track Name</div>
-    <div class="track-artist text-xl mt-2">Track Artist</div>
+  <div class="details flex flex-col items-center justify-center px-6 min-w-0">
+    <div class="track-name text-3xl truncate max-w-sm overflow-hidden whitespace-nowrap">Loading...</div>
+    <div class="track-artist text-xl mt-2"></div>
   </div>
 
   <div class="buttons flex flex-row items-center mt-6 space-x-4">

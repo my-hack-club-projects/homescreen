@@ -26,8 +26,8 @@ class MusicPlayer {
     this.playPauseTrackBtn.addEventListener("click", this.playPauseTrack.bind(this));
 
     this.importTracksInput.addEventListener("change", async function (event) {
-      const count = event.target.files.length;
-      console.log(`Importing ${count} tracks...`);
+      this.trackName.textContent = 'Importing...';
+      this.trackArtist.textContent = '';
       
       const formData = new FormData();
       for (let i = 0; i < event.target.files.length; i++) {
@@ -47,10 +47,25 @@ class MusicPlayer {
       }
     }.bind(this));
 
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', this.playTrack.bind(this));
+      navigator.mediaSession.setActionHandler('stop', function () {
+        this.pauseTrack();
+        this.fetchTracks();
+      }.bind(this));
+      navigator.mediaSession.setActionHandler('pause', this.pauseTrack.bind(this));
+      navigator.mediaSession.setActionHandler('previoustrack', this.prevTrack.bind(this));
+      navigator.mediaSession.setActionHandler('nexttrack', this.nextTrack.bind(this));
+    }
+
+    this.update();
     this.fetchTracks();
   }
 
   async fetchTracks() {
+    this.trackName.textContent = 'Loading...';
+    this.trackArtist.textContent = '';
+
     const response = await fetch('/music/tracks');
     const data = await response.json();
 
@@ -61,25 +76,19 @@ class MusicPlayer {
     }
   }
 
-  // async importTracks(directory) {
-  //   const response = await fetch('/music/import', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ directory: directory }),
-  //   });
-
-  //   const data = await response.json();
-
-  //   if (data.success) {
-  //     console.log('Tracks imported successfully');
-  //     this.fetchTracks();
-  //   }
-  // }
-
   loadTrack(index) {
     clearInterval(this.updateTimer);
+
+    if (this.trackList.length === 0) {
+      this.trackName.textContent = 'No tracks imported';
+      this.trackArtist.textContent = '';
+      return;
+    }
+
+    if (index < 0 || index >= this.trackList.length) {
+      console.error('Invalid track index');
+      return
+    }
 
     const track = this.trackList[index];
     this.currTrack.src = track.path;
@@ -108,6 +117,13 @@ class MusicPlayer {
   }
 
   playTrack() {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.trackName.textContent,
+        artist: this.trackArtist.textContent,
+      });
+    }
+
     this.currTrack.play();
     this.isPlaying = true;
     this.update();
