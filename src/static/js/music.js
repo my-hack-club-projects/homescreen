@@ -86,6 +86,7 @@ class MusicPlayer {
               this.trackIndex = 0;
               this.history = [0];
               this.loadTrack(0);
+              this.pauseTrack();
             }
           }.bind(this));
           artistFilterList.appendChild(artistFilter);
