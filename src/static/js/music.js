@@ -1,20 +1,95 @@
-let now_playing = document.querySelector(".now-playing");
-let track_name = document.querySelector(".track-name");
-let track_artist = document.querySelector(".track-artist");
+class MusicPlayer {
+  constructor(trackList) {
+    this.trackList = trackList;
+    this.trackIndex = 0;
+    this.isPlaying = false;
+    this.updateTimer = null;
 
-let playpause_btn = document.querySelector(".playpause-track");
-let next_btn = document.querySelector(".next-track");
-let prev_btn = document.querySelector(".prev-track");
+    // DOM elements
+    this.nowPlaying = document.querySelector(".now-playing");
+    this.trackName = document.querySelector(".track-name");
+    this.trackArtist = document.querySelector(".track-artist");
+    this.playPauseIcon = document.querySelector('.playpause-icon');
+    this.currTrack = document.createElement('audio');
 
-let track_index = 0;
-let isPlaying = false;
-let updateTimer;
+    // Buttons
+    this.nextBtn = document.querySelector(".next-track");
+    this.prevBtn = document.querySelector(".prev-track");
+    this.playPauseTrackBtn = document.querySelector(".playpause-track");
 
-// Create new audio element
-let curr_track = document.createElement('audio');
+    // Event listeners
+    this.currTrack.addEventListener("ended", this.nextTrack.bind(this));
+    this.nextBtn.addEventListener("click", this.nextTrack.bind(this));
+    this.prevBtn.addEventListener("click", this.prevTrack.bind(this));
+    this.playPauseTrackBtn.addEventListener("click", this.playPauseTrack.bind(this));
+  }
 
-// Define the tracks that have to be played
-let track_list = [
+  loadTrack(index) {
+    clearInterval(this.updateTimer);
+
+    const track = this.trackList[index];
+    this.currTrack.src = track.path;
+    this.currTrack.load();
+
+    this.trackName.textContent = track.name;
+    this.trackArtist.textContent = track.artist;
+
+    this.updatePlayPauseIcon();
+  }
+
+  update() {
+    this.updatePlayPauseIcon();
+  }
+
+  playPauseTrack() {
+    this.isPlaying ? this.pauseTrack() : this.playTrack();
+  }
+
+  updatePlayPauseIcon() {
+    if (this.playPauseIcon) {
+      this.playPauseIcon.src = this.isPlaying 
+        ? 'https://www.svgrepo.com/show/36641/pause.svg' 
+        : 'https://www.svgrepo.com/show/148207/play-button.svg';
+    }
+  }
+
+  playTrack() {
+    this.currTrack.play();
+    this.isPlaying = true;
+    this.update();
+  }
+
+  pauseTrack() {
+    this.currTrack.pause();
+    this.isPlaying = false;
+    this.update();
+  }
+
+  nextTrack() {
+    this.trackIndex = (this.trackIndex + 1) % this.trackList.length;
+    this.loadTrack(this.trackIndex);
+    this.playTrack();
+    this.update();
+  }
+
+  prevTrack() {
+    this.trackIndex = (this.trackIndex - 1 + this.trackList.length) % this.trackList.length;
+    this.loadTrack(this.trackIndex);
+    this.playTrack();
+    this.update();
+  }
+
+  seekTo(seekSlider) {
+    const seekTo = this.currTrack.duration * (seekSlider.value / 100);
+    this.currTrack.currentTime = seekTo;
+  }
+
+  setVolume(volumeSlider) {
+    this.currTrack.volume = volumeSlider.value / 100;
+  }
+}
+
+const trackList = [
   {
     name: "Night Owl",
     artist: "Broke For Free",
@@ -35,62 +110,5 @@ let track_list = [
   },
 ];
 
-function loadTrack(track_index) {
-  clearInterval(updateTimer);
-  resetValues();
-  curr_track.src = track_list[track_index].path;
-  curr_track.load();
-
-  track_name.textContent = track_list[track_index].name;
-  track_artist.textContent = track_list[track_index].artist;
-
-  curr_track.addEventListener("ended", nextTrack);
-}
-
-function resetValues() {
-}
-
-// Load the first track in the tracklist
-loadTrack(track_index);
-
-function playpauseTrack() {
-  if (!isPlaying) playTrack();
-  else pauseTrack();
-}
-
-function playTrack() {
-  curr_track.play();
-  isPlaying = true;
-  playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x"></i>';
-}
-
-function pauseTrack() {
-  curr_track.pause();
-  isPlaying = false;
-  playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';;
-}
-
-function nextTrack() {
-  if (track_index < track_list.length - 1)
-    track_index += 1;
-  else track_index = 0;
-  loadTrack(track_index);
-  playTrack();
-}
-
-function prevTrack() {
-  if (track_index > 0)
-    track_index -= 1;
-  else track_index = track_list.length;
-  loadTrack(track_index);
-  playTrack();
-}
-
-function seekTo() {
-  let seekto = curr_track.duration * (seek_slider.value / 100);
-  curr_track.currentTime = seekto;
-}
-
-function setVolume() {
-  curr_track.volume = volume_slider.value / 100;
-}
+const musicPlayer = new MusicPlayer(trackList);
+musicPlayer.loadTrack(0);

@@ -7,8 +7,7 @@
 
   <div class="buttons flex flex-row items-center mt-6 space-x-4">
     <!-- Previous Track Button -->
-    <button type="button" class="bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Previous"
-      onclick="prevTrack()">
+    <button type="button" class="prev-track bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Previous">
       <svg width="24" height="24" fill="none">
         <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" />
@@ -18,16 +17,13 @@
 
     <!-- Play/Pause Button -->
     <button type="button"
-      class="bg-white hover:bg-gray-400 text-slate-900 dark:bg-slate-100 dark:text-slate-700 flex-none -my-2 mx-auto rounded-full shadow-md flex items-center justify-center p-4"
-      aria-label="Pause" onclick="playpauseTrack()">
-      <svg width="30" height="32" fill="currentColor">
-        <rect x="6" y="4" width="4" height="24" rx="2" />
-        <rect x="20" y="4" width="4" height="24" rx="2" />
-      </svg>
+      class="playpause-track bg-white hover:bg-gray-400 text-slate-900 dark:bg-slate-100 dark:text-slate-700 flex-none -my-2 mx-auto rounded-full shadow-md flex items-center justify-center p-4"
+      aria-label="Pause">
+      <img class="playpause-icon" width="30" height="32">
     </button>
 
     <!-- Next Track Button -->
-    <button type="button" class="bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Next" onclick="nextTrack()">
+    <button type="button" class="next-track bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Next">
       <svg width="24" height="24" fill="none">
         <path d="M14 12 6 6v12l8-6Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" />
