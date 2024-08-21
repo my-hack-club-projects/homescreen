@@ -1,4 +1,19 @@
 document.querySelectorAll('.draggable').forEach(widget => {
+    const savedPosition = localStorage.getItem(widget.id);
+    if (savedPosition) {
+        const { left, top } = JSON.parse(savedPosition);
+        widget.style.left = left;
+        widget.style.top = top;
+    }
+
+    const savePosition = () => {
+        const position = {
+            left: widget.style.left,
+            top: widget.style.top
+        };
+        localStorage.setItem(widget.id, JSON.stringify(position));
+    };
+
     widget.addEventListener('mousedown', function (e) {
         let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
         let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
@@ -12,6 +27,7 @@ document.querySelectorAll('.draggable').forEach(widget => {
 
         document.addEventListener('mouseup', () => {
             document.removeEventListener('mousemove', moveAt);
+            savePosition(); // Save position when dragging stops
         }, { once: true });
     });
 
@@ -30,6 +46,7 @@ document.querySelectorAll('.draggable').forEach(widget => {
 
         document.addEventListener('touchend', () => {
             document.removeEventListener('touchmove', moveAtTouch);
+            savePosition(); // Save position when dragging stops
         }, { once: true });
     });
 });
