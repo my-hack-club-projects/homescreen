@@ -1,6 +1,8 @@
 class MusicPlayer {
   constructor() {
     this.trackList = null;
+    this.filteredList = null;
+    this.filter = [];
     this.trackIndex = 0;
     this.isPlaying = false;
     this.updateTimer = null;
@@ -9,6 +11,7 @@ class MusicPlayer {
     this.nowPlaying = document.querySelector(".now-playing");
     this.trackName = document.querySelector(".track-name");
     this.trackArtist = document.querySelector(".track-artist");
+    this.artistFilterPopup = document.querySelector(".artist-filter-popup")
     this.playPauseIcon = document.querySelector('.playpause-icon');
     this.currTrack = document.createElement('audio');
 
@@ -18,6 +21,7 @@ class MusicPlayer {
     this.playPauseTrackBtn = document.querySelector(".playpause-track");
     this.importTracksInput = document.querySelector("#import-tracks-input");
     this.importTracksForm = document.querySelector("#import-tracks-form");
+    this.artistFilterButton = document.querySelector(".artist-filter-btn")
 
     // Event listeners
     this.currTrack.addEventListener("ended", this.nextTrack.bind(this));
@@ -45,6 +49,10 @@ class MusicPlayer {
       } else {
         alert('Failed to import tracks');
       }
+    }.bind(this));
+
+    this.artistFilterButton.addEventListener("click", function () {
+      this.artistFilterPopup.classList.toggle("hidden");
     }.bind(this));
 
     if ('mediaSession' in navigator) {
@@ -102,6 +110,16 @@ class MusicPlayer {
 
   update() {
     this.updatePlayPauseIcon();
+
+    let filteredList = this.trackList;
+    if (this.filter.length > 0) {
+      filteredList = this.trackList.filter(track => {
+        return this.filter.some(filter => {
+          return track.artist.toLowerCase().includes(filter);
+        });
+      });
+    }
+    this.filteredList = filteredList;
   }
 
   playPauseTrack() {
