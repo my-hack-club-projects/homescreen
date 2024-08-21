@@ -1,6 +1,6 @@
 class MusicPlayer {
-  constructor(trackList) {
-    this.trackList = trackList;
+  constructor() {
+    this.trackList = null;
     this.trackIndex = 0;
     this.isPlaying = false;
     this.updateTimer = null;
@@ -22,6 +22,36 @@ class MusicPlayer {
     this.nextBtn.addEventListener("click", this.nextTrack.bind(this));
     this.prevBtn.addEventListener("click", this.prevTrack.bind(this));
     this.playPauseTrackBtn.addEventListener("click", this.playPauseTrack.bind(this));
+
+    this.fetchTracks();
+  }
+
+  async fetchTracks() {
+    const response = await fetch('/music/tracks');
+    const data = await response.json();
+
+    if (data.success) {
+      this.trackList = data.tracks;
+      this.trackIndex = 0;
+      this.loadTrack(0);
+    }
+  }
+
+  async importTracks() {
+    const response = await fetch('/music/import', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ directory: 'C:\\Users\\robin\\Music' }), // TODO: Replace this with a directory picker result
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log('Tracks imported successfully');
+      this.fetchTracks();
+    }
   }
 
   loadTrack(index) {
@@ -89,26 +119,6 @@ class MusicPlayer {
   }
 }
 
-const trackList = [
-  {
-    name: "Night Owl",
-    artist: "Broke For Free",
-    image: "https://images.pexels.com/photos/2264753/pexels-photo-2264753.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-    path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3"
-  },
-  {
-    name: "Enthusiast",
-    artist: "Tours",
-    image: "https://images.pexels.com/photos/3100835/pexels-photo-3100835.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-    path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Tours/Enthusiast/Tours_-_01_-_Enthusiast.mp3"
-  },
-  {
-    name: "Shipping Lanes",
-    artist: "Chad Crouch",
-    image: "https://images.pexels.com/photos/1717969/pexels-photo-1717969.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-    path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Shipping_Lanes.mp3",
-  },
-];
+const musicPlayer = new MusicPlayer();
 
-const musicPlayer = new MusicPlayer(trackList);
-musicPlayer.loadTrack(0);
+musicPlayer.importTracks();

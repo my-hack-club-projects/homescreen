@@ -1,6 +1,8 @@
 from flask import Flask, render_template
+from modules.music import music
 
 app = Flask(__name__)
+app.register_blueprint(music)
 
 @app.route('/')
 def home():
