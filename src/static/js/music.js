@@ -33,7 +33,7 @@ class MusicPlayer {
     this.importTracksInput.addEventListener("change", async function (event) {
       this.trackName.textContent = 'Importing...';
       this.trackArtist.textContent = '';
-      
+
       const formData = new FormData();
       for (let i = 0; i < event.target.files.length; i++) {
         formData.append('file', event.target.files[i]);
@@ -44,7 +44,7 @@ class MusicPlayer {
         body: formData,
       });
       const data = await response.json();
-  
+
       if (data.success) {
         this.fetchTracks();
       } else {
@@ -54,7 +54,7 @@ class MusicPlayer {
 
     this.artistFilterButton.addEventListener("click", function () {
       this.artistFilterPopup.classList.toggle("hidden");
-      
+
       if (!this.artistFilterPopup.classList.contains("hidden")) {
         const artistList = new Set();
         this.trackList.forEach(track => {
@@ -99,6 +99,19 @@ class MusicPlayer {
         });
       }
     }.bind(this));
+
+    let paused = false;
+    function autoscroll() {
+      this.trackName.scrollLeft += 1;
+      if (this.trackName.scrollLeft + this.trackName.clientWidth >= this.trackName.scrollWidth && !paused) {
+        paused = true;
+        setTimeout(() => {
+          paused = false;
+          this.trackName.scrollLeft = 0;
+        }, 1000);
+      }
+    }
+    setInterval(autoscroll.bind(this), 20);
 
     if ('mediaSession' in navigator) {
       navigator.mediaSession.setActionHandler('play', this.playTrack.bind(this));
@@ -175,8 +188,8 @@ class MusicPlayer {
 
   updatePlayPauseIcon() {
     if (this.playPauseIcon) {
-      this.playPauseIcon.src = this.isPlaying 
-        ? 'https://www.svgrepo.com/show/36641/pause.svg' 
+      this.playPauseIcon.src = this.isPlaying
+        ? 'https://www.svgrepo.com/show/36641/pause.svg'
         : 'https://www.svgrepo.com/show/148207/play-button.svg';
     }
   }
