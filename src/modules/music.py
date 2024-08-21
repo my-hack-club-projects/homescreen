@@ -1,13 +1,11 @@
 from flask import Blueprint, request
+from . import db
 import audio_metadata
 import os
 
 music = Blueprint('music', __name__)
 
 ALLOWED_EXTENSIONS = {'mp3', 'wav'}
-
-# TODO: Save track list to database
-tracklist = []
 
 @music.route('/music/import', methods=['POST'])
 def music_import():
@@ -17,7 +15,8 @@ def music_import():
     for file in os.listdir('static/music'):
         os.remove(f'static/music/{file}')
 
-    tracklist.clear()
+    db.save('music', [])
+    tracklist = []
     
     try:
         for file in request.files.getlist('file'):
@@ -40,6 +39,8 @@ def music_import():
                 })
             else:
                 print(f'File {file.filename} is not allowed')
+
+        db.save('music', tracklist)
         
         return {
             "success": True,
@@ -54,7 +55,14 @@ def music_import():
 
 @music.route('/music/tracks', methods=['GET'])
 def music_tracks():
-    return {
-        "success": True,
-        "tracks": tracklist
-    }
+    try:
+        return {
+            "success": True,
+            "tracks": db.read('music', default=[])
+        }
+    except Exception as e:
+        print(f"Error getting music tracks: {str(e)}")
+        return {
+            "success": False,
+            "message": f"Error getting music tracks: {str(e)}"
+        }
