@@ -3,6 +3,7 @@ class MusicPlayer {
     this.trackList = null;
     this.filteredList = null;
     this.filter = [];
+    this.history = [];
     this.trackIndex = 0;
     this.isPlaying = false;
     this.updateTimer = null;
@@ -83,6 +84,7 @@ class MusicPlayer {
 
             if (!this.filter.includes(this.trackArtist.textContent)) {
               this.trackIndex = 0;
+              this.history = [0];
               this.loadTrack(0);
             }
           }.bind(this));
@@ -122,6 +124,7 @@ class MusicPlayer {
     if (data.success) {
       this.trackList = data.tracks;
       this.trackIndex = 0;
+      this.history = [0];
       this.update();
       this.loadTrack(0);
     }
@@ -197,14 +200,26 @@ class MusicPlayer {
   }
 
   nextTrack() {
-    this.trackIndex = (this.trackIndex + 1) % this.filteredList.length;
+    if (this.history.length >= this.filteredList.length) {
+      this.history.shift();
+    }
+    let nextIndex = Math.round(Math.random() * (this.filteredList.length - 1));
+    while (this.history.includes(nextIndex)) {
+      nextIndex = Math.round(Math.random() * (this.filteredList.length - 1));
+    }
+    this.history.push(nextIndex)
+    this.trackIndex = nextIndex;
     this.loadTrack(this.trackIndex);
     this.playTrack();
     this.update();
   }
 
   prevTrack() {
-    this.trackIndex = (this.trackIndex - 1 + this.filteredList.length) % this.filteredList.length;
+    if (this.history.length <= 1) {
+      return;
+    }
+    this.history.pop();
+    this.trackIndex = this.history[this.history.length - 1];
     this.loadTrack(this.trackIndex);
     this.playTrack();
     this.update();
