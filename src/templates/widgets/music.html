@@ -1,6 +1,19 @@
 <div id="widget-music"
-  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center h-[95vh] p-10">
-  <div class="details flex flex-col items-center justify-center">
+  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center h-[95vh] p-4 pb-6">
+  <div class="top-bar flex flex-row items-center justify-between w-full mb-6">
+    <button></button>
+    <!-- TODO: Filter artist button above -->
+
+    <form id="import-tracks-form" method="post" enctype="multipart/form-data">
+      <input type="file" id="import-tracks-input" webkitdirectory directory hidden></input>
+    </form>
+
+    <label for="import-tracks-input" class="import-tracks bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Import tracks">
+      <img src="https://www.svgrepo.com/show/36324/upload.svg" width="18" height="18">
+    </label>
+  </div>
+  
+  <div class="details flex flex-col items-center justify-center px-6">
     <div class="track-name text-3xl">Track Name</div>
     <div class="track-artist text-xl mt-2">Track Artist</div>
   </div>

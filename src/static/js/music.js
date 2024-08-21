@@ -16,12 +16,36 @@ class MusicPlayer {
     this.nextBtn = document.querySelector(".next-track");
     this.prevBtn = document.querySelector(".prev-track");
     this.playPauseTrackBtn = document.querySelector(".playpause-track");
+    this.importTracksInput = document.querySelector("#import-tracks-input");
+    this.importTracksForm = document.querySelector("#import-tracks-form");
 
     // Event listeners
     this.currTrack.addEventListener("ended", this.nextTrack.bind(this));
     this.nextBtn.addEventListener("click", this.nextTrack.bind(this));
     this.prevBtn.addEventListener("click", this.prevTrack.bind(this));
     this.playPauseTrackBtn.addEventListener("click", this.playPauseTrack.bind(this));
+
+    this.importTracksInput.addEventListener("change", async function (event) {
+      const count = event.target.files.length;
+      console.log(`Importing ${count} tracks...`);
+      
+      const formData = new FormData();
+      for (let i = 0; i < event.target.files.length; i++) {
+        formData.append('file', event.target.files[i]);
+      }
+
+      const response = await fetch('/music/import', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+  
+      if (data.success) {
+        this.fetchTracks();
+      } else {
+        alert('Failed to import tracks');
+      }
+    }.bind(this));
 
     this.fetchTracks();
   }
@@ -37,22 +61,22 @@ class MusicPlayer {
     }
   }
 
-  async importTracks() {
-    const response = await fetch('/music/import', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ directory: 'C:\\Users\\robin\\Music' }), // TODO: Replace this with a directory picker result
-    });
+  // async importTracks(directory) {
+  //   const response = await fetch('/music/import', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ directory: directory }),
+  //   });
 
-    const data = await response.json();
+  //   const data = await response.json();
 
-    if (data.success) {
-      console.log('Tracks imported successfully');
-      this.fetchTracks();
-    }
-  }
+  //   if (data.success) {
+  //     console.log('Tracks imported successfully');
+  //     this.fetchTracks();
+  //   }
+  // }
 
   loadTrack(index) {
     clearInterval(this.updateTimer);
@@ -120,5 +144,3 @@ class MusicPlayer {
 }
 
 const musicPlayer = new MusicPlayer();
-
-musicPlayer.importTracks();
