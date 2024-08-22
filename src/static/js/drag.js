@@ -1,5 +1,8 @@
+const response = await fetch('/drag/load')
+const positions = (await response.json()).data;
+
 document.querySelectorAll('.draggable').forEach(widget => {
-    const savedPosition = localStorage.getItem(widget.id);
+    const savedPosition = positions[widget.id];
     if (savedPosition) {
         const { left, top } = JSON.parse(savedPosition);
         widget.style.left = left;
@@ -11,7 +14,18 @@ document.querySelectorAll('.draggable').forEach(widget => {
             left: widget.style.left,
             top: widget.style.top
         };
-        localStorage.setItem(widget.id, JSON.stringify(position));
+        positions[widget.id] = JSON.stringify(position);
+        fetch('/drag/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(positions)
+        }).then(response => {
+            if (!response.ok) {
+                console.error('Failed to save position');
+            }
+        });
     };
 
     widget.addEventListener('mousedown', function (e) {
