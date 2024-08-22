@@ -1,8 +1,8 @@
 <div id="widget-music"
-  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center h-[95vh] w-64 p-4 pb-6">
+  class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex flex-col items-center justify-center w-64 p-4 pb-6">
   <div class="top-bar flex flex-row items-center justify-between w-full mb-6">
     <button class="artist-filter-btn bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Filter by artist">
-      <img src="https://www.svgrepo.com/show/345047/person.svg" width="18" height="18">
+       <img src="{{ url_for('static', filename='images/person.svg') }}" width="18" height="18">
     </button>
 
     <form id="import-tracks-form" method="post" enctype="multipart/form-data">
@@ -10,7 +10,7 @@
     </form>
 
     <label for="import-tracks-input" class="import-tracks bg-white hover:bg-gray-400 rounded-full p-2" aria-label="Import tracks">
-      <img src="https://www.svgrepo.com/show/36324/upload.svg" width="18" height="18">
+       <img src="{{ url_for('static', filename='images/upload.svg') }}" width="18" height="18">
     </label>
   </div>
   
