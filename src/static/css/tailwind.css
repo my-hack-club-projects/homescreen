@@ -644,8 +644,20 @@ video {
   width: 100%;
 }
 
+.w-24 {
+  width: 6rem;
+}
+
 .min-w-0 {
   min-width: 0px;
+}
+
+.min-w-64 {
+  min-width: 16rem;
+}
+
+.min-w-12 {
+  min-width: 3rem;
 }
 
 .flex-none {
@@ -755,6 +767,10 @@ video {
   background-position: center;
 }
 
+.fill-white {
+  fill: #fff;
+}
+
 .p-10 {
   padding: 2.5rem;
 }
@@ -811,6 +827,11 @@ video {
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .font-bold {
