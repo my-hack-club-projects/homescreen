@@ -1,5 +1,5 @@
-const response = await fetch('/drag/load')
-const positions = (await response.json()).data;
+const response = await fetch('/db/drag?default={}')
+const positions = (await response.json()).data || {};
 
 document.querySelectorAll('.draggable').forEach(widget => {
     const savedPosition = positions[widget.id];
@@ -15,12 +15,14 @@ document.querySelectorAll('.draggable').forEach(widget => {
             top: widget.style.top
         };
         positions[widget.id] = JSON.stringify(position);
-        fetch('/drag/save', {
+        fetch('/db/drag', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(positions)
+            body: JSON.stringify({
+                data: positions
+            })
         }).then(response => {
             if (!response.ok) {
                 console.error('Failed to save position');
