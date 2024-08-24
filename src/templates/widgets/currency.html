@@ -1,24 +1,18 @@
 <div id="widget-currency"
     class="draggable rounded-lg shadow-lg bg-gray-500 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 flex items-center justify-center p-4 gap-2">
-    <div class="flex flex-col items-center justify-center gap-2" id="currency-from">
-        <select class="currency-dropdown bg-transparent text-xl text-white">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
+    <div class="flex flex-col items-center justify-center gap-2">
+        <select class="currency-dropdown bg-transparent text-xl text-white" id="from-dropdown">
         </select>
-        <input type="text" class="currency-input bg-transparent text-3xl text-white text-center outline-none w-24">
+        <input type="text" class="currency-input bg-transparent text-3xl text-white text-center outline-none w-24" id="currency-from">
     </div>
 
     <!-- arrow -->
     <img src="{{ url_for('static', filename='images/double_arrow.svg') }}" width="24" height="24" class="prevent-select fill-white">
 
-    <div class="flex flex-col items-center justify-center gap-2" id="currency-from">
-        <select class="currency-dropdown bg-transparent text-xl text-white">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
+    <div class="flex flex-col items-center justify-center gap-2">
+        <select class="currency-dropdown bg-transparent text-xl text-white" id="to-dropdown">
         </select>
-        <input type="text" class="currency-input bg-transparent text-3xl text-white text-center outline-none w-24">
+        <input type="text" class="currency-input bg-transparent text-3xl text-white text-center outline-none w-24" id="currency-to">
     </div>
 </div>
 
